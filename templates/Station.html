@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+	<head>
+		<title>{{ title }}</title>
+	</head>
+
+
+	<body>
+		<h1>Here is the current status: </h1>
+		<h2>Date/Time: {{ time }}</h2>
+		<h2>Garage Door #1: {{ r1_state }} <button type="button" onclick="location.href='./door1'">Actuate Door #1</button></h2>
+		<h2>Garage Door #2: {{ r2_state }} <button type="button" onclick="location.href='./door2'">Actuate Door #2</button></h2>
+		<h2><button type="button" onclick="location.href='./bothdoors'">Actuate Both Doors</h2>
+		<h2>Circuit #3 state: {{ r3_state }} <button type="button" onclick="location.href='./circuit/r3/on'">On</button> <button type="button" onclick="location.href='./circuit/r3/off'">Off</button></h2>
+		<h2>Circuit #4 state: {{ r4_state }} <button type="button" onclick="location.href='./circuit/r4/on'">On</button> <button type="button" onclick="location.href='./circuit/r4/off'">Off</button></h2>
+		<h2>Circuit #5 state: {{ r5_state }} <button type="button" onclick="location.href='./circuit/r5/on'">On</button> <button type="button" onclick="location.href='./circuit/r5/off'">Off</button></h2>
+		<h2>Circuit #6 state: {{ r6_state }} <button type="button" onclick="location.href='./circuit/r6/on'">On</button> <button type="button" onclick="location.href='./circuit/r6/off'">Off</button></h2>
+		<h2>Circuit #7 state: {{ r7_state }} <button type="button" onclick="location.href='./circuit/r7/on'">On</button> <button type="button" onclick="location.href='./circuit/r7/off'">Off</button></h2>
+		<h2>Circuit #8 state: {{ r8_state }} <button type="button" onclick="location.href='./circuit/r8/on'">On</button> <button type="button" onclick="location.href='./circuit/r8/off'">Off</button></h2>
+		<h2>All Lights <button type="button" onclick="location.href='./circuit/all_lights/on'">On</button> <button type="button" onclick="location.href='./circuit/all_lights/off'">Off</button></h2>
+	</body>
+	
+</html>
