@@ -63,7 +63,7 @@ def home():
     return render_template('Station.html', **templateData)
 
 #define the garage door sequences
-@app.route('/<garagedoor>')
+@app.route('/actuatedoor/<garagedoor>')
 def actuatedoor(garagedoor):
     if garagedoor == 'door1':
         relay = r1
