@@ -141,11 +141,11 @@ def actuatedoor(garagedoor):
         relay = []
         for r in allrelays[0:2]:
             relay.append(relays[r].pin) 
-        slackmsg(f"Hey, both garage doors were just activated at {gettime()}. Thought you'd want to know")
+        slackmsg(f"both garage doors were just activated at {gettime()}.")
     elif garagedoor == 'r1' or 'r2':
         relay = relays[garagedoor].pin
         dname = "middle bay" if garagedoor == 'r1' else "big bay"
-        slackmsg(f"Hey, the {dname} garage door just activated at {gettime()}. Just wanted to make sure that you are aware.")
+        slackmsg(f"the {dname} garage door just activated at {gettime()}.")
 
     else:
         return redirect(url_for('home'))        
@@ -176,7 +176,7 @@ def switch(circuit, action):
         return redirect(url_for('home'))
     #set the GPIO pin     
     GPIO.output(relay, state)
-    slackmsg(f"Yo, somebody just turned {circuit} {action}. Figured I'd keep you up to date.")
+    slackmsg(f"somebody just turned {circuit} {action}.")
     time.sleep(doordelay)
     return redirect(url_for('home'))
 
