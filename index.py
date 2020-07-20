@@ -6,6 +6,8 @@ import time
 import math
 from ADCDevice import *
 from gpiozero import CPUTemperature
+from slackbot.slackbot import *
+
 
 on = False
 off = True
@@ -85,6 +87,7 @@ class relay:
         self.pin = pin
         self.calculate()
         
+        
     def calculate(self):
         self.state = 'on' if GPIO.input(self.pin) == 0 else'off'
     
@@ -138,9 +141,11 @@ def actuatedoor(garagedoor):
         relay = []
         for r in allrelays[0:2]:
             relay.append(relays[r].pin) 
-        #relay = [relays['r1'].pin,relays['r2'].pin]
+        slackmsg(f"Hey, both garage doors were just activated at {gettime()}. Thought you'd want to know")
     elif garagedoor == 'r1' or 'r2':
         relay = relays[garagedoor].pin
+        dname = "middle bay" if garagedoor == 'r1' else "big bay"
+        slackmsg(f"Hey, the {dname} garage door just activated at {gettime()}. Just wanted to make sure that you are aware.")
 
     else:
         return redirect(url_for('home'))        
@@ -171,6 +176,7 @@ def switch(circuit, action):
         return redirect(url_for('home'))
     #set the GPIO pin     
     GPIO.output(relay, state)
+    slackmsg(f"Yo, somebody just turned {circuit} {action}. Figured I'd keep you up to date.")
     time.sleep(doordelay)
     return redirect(url_for('home'))
 
