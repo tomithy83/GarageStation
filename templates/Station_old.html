@@ -36,18 +36,8 @@
       <div class="one-half column">
 		<h1>Here is the current status: </h1>
 		<h2>Date/Time: {{ time }}</h2>
-		<h2>CPU Temperature: {{ cputemp }}&#176;F</h2>
-		<h2>Ambient Temperature: {{ temp1 }}&#176;F</h2>
-  <!-- 		<h2>Outside Temperature: {{ temp2 }}&#176;F</h2>
-		<h2>Fridge Temperature: {{ temp3 }}&#176;F</h2>
-		<h2>Deep Freezer Temperature: {{ temp4 }}&#176;F</h2>
-		<h2>Upright Freezer Temperature: {{ temp5 }}&#176;F</h2>
-		<h2>Deep Freezer Temperature: {{ temp6 }}&#176;F</h2>
-		<h2>Extra Temperature #1: {{ temp7 }}&#176;F</h2>
-		<h2>Extra Temperature #2: {{ temp8 }}&#176;F</h2>
-  -->
-		<h2>Garage Door #1: {{ r1_state }} <button type="button" onclick="location.href='/actuatedoor/r1'">Actuate Door #1</button></h2>
-		<h2>Garage Door #2: {{ r2_state }} <button type="button" onclick="location.href='/actuatedoor/r2'">Actuate Door #2</button></h2>
+		<h2>Garage Door #1: {{ r1_state }} <button type="button" onclick="location.href='/actuatedoor/door1'">Actuate Door #1</button></h2>
+		<h2>Garage Door #2: {{ r2_state }} <button type="button" onclick="location.href='/actuatedoor/door2'">Actuate Door #2</button></h2>
 		<h2>Both Doors: <button type="button" onclick="location.href='/actuatedoor/bothdoors'">Actuate Both Doors</h2>
 		<h2>Circuit #3 state: {{ r3_state }} <button type="button" onclick="location.href='/circuit/r3/on'">On</button> <button type="button" onclick="location.href='/circuit/r3/off'">Off</button></h2>
 		<h2>Circuit #4 state: {{ r4_state }} <button type="button" onclick="location.href='/circuit/r4/on'">On</button> <button type="button" onclick="location.href='/circuit/r4/off'">Off</button></h2>
