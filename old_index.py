@@ -1,11 +1,12 @@
 #import modules:
 from flask import Flask, render_template, redirect, url_for, request
-import datetime, time, math
+import datetime
 import RPi.GPIO as GPIO
-#from ADCDevice import *
+import time
+import math
+from ADCDevice import *
 from gpiozero import CPUTemperature
 from slackbot.slackbot import *
-import spidev
 
 
 on = False
@@ -20,17 +21,11 @@ def gettime():
 #create app object
 app = Flask(__name__)
 
-#Setup GPIO
+#setup relays
+relaypins = (26,19,13,22,27,17,4,18)
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
-
-#setup relays
-relaypins = (26,21,19,20,16,13,6,12)
 GPIO.setup(relaypins, GPIO.OUT)
-
-#setup switches
-switchpins = (17,18)
-GPIO.setup(switchpins, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 #temperature conversion from Celsius to Fahrenheit rounded to the nearest tenth  
 def Fdeg(Cdeg):
@@ -42,16 +37,20 @@ def getcputemp():
     return Fdeg(cpu.temperature)
     
 
-# Setup the ADC
-spi = spidev.SpiDev()
-spi.open(0, 0)
-spi.max_speed_hz = 1350000
-
-def analog_read(channel):
-    r = spi.xfer2([1, (8 + channel) << 4, 0])
-    adc_out = ((r[1]&3) << 8) + r[2]
-    return adc_out
-
+# Define an ADCDevice class object and setup the ADC
+adc = ADCDevice()
+def setupadc():
+    global adc
+    if(adc.detectI2C(0x48)): # Detect the pcf8591.
+        adc = PCF8591()
+    elif(adc.detectI2C(0x4b)): # Detect the ads7830
+        adc = ADS7830()
+    else:
+        print("No correct I2C address found, \n"
+        "Please use command 'i2cdetect -y 1' to check the I2C address! \n"
+        "Program Exit. \n");
+        exit(-1)
+setupadc()
 
 #define thermometer class
 class thermometer:
@@ -63,8 +62,8 @@ class thermometer:
         self.calculate()
         
     def calculate(self):
-        self.value = analog_read(self.pin)        # read ADC value A0 pin
-        self.voltage = self.value * 3.3 / 1024       # calculate voltage
+        self.value = adc.analogRead(self.pin)        # read ADC value A0 pin
+        self.voltage = self.value / 255.0 * 3.3        # calculate voltage
         self.resistance = 10 * self.voltage / (3.3 - self.voltage)    # calculate resistance value of thermistor
         self.tempK = 1/(1/(273.15 + 25) + math.log(self.resistance/10)/3950.0) # calculate temperature (Kelvin)
         self.tempC = self.tempK -273.15        # calculate temperature (Celsius)
@@ -73,13 +72,13 @@ class thermometer:
 
 #create thermometers
 therm1 = thermometer(0)
-therm2 = thermometer(1)
-therm3 = thermometer(2)
-therm4 = thermometer(3)
-therm5 = thermometer(4)
-therm6 = thermometer(5)
-therm7 = thermometer(6)
-therm8 = thermometer(7)
+#therm2 = thermometer(1)
+#therm3 = thermometer(2)
+#therm4 = thermometer(3)
+#therm5 = thermometer(4)
+#therm6 = thermometer(5)
+#therm7 = thermometer(6)
+#therm8 = thermometer(7)
 
 #define relay class
 class relay:
@@ -95,28 +94,11 @@ class relay:
 relays = {}
 for i in range(len(relaypins)):
     name = 'r{}'.format(i+1)
-    rpin = relaypins[i]
-    relays[name] = relays.get(name, relay(pin = rpin))
+    pin = relaypins[i]
+    relays[name] = relays.get(name, relay(pin = pin))
     
 #turn relays off
 GPIO.output(relaypins, off)
-
-#define switch class
-class switch:
-    
-    def __init__(self,pin):
-        self.pin = pin
-        self.calculate()
-        
-        
-    def calculate(self):
-        self.state = 'on' if GPIO.input(self.pin) == 0 else'off'
-    
-switchs = {}
-for i in range(len(switchpins)):
-    name = 's{}'.format(i+1)
-    spin = switchpins[i]
-    switchs[name] = switchs.get(name, relay(pin = spin))
 
 #Define the function to clean up the program at the close.   
 def destroy():
@@ -133,11 +115,7 @@ def home():
     #loop thru the thermometers to update the variables
     for therm in thermometer.thermometers:
         therm.calculate()
-
-    #loop thru the switch to update the variables
-    for s in list(switchs.values()):
-        s.calculate()
-        
+ 
     #set theparamaters to copy to the template 
     templateData = {
         'title' : 'Garage Station',
@@ -151,15 +129,7 @@ def home():
         'r7_state' : relays['r7'].state,
         'r8_state' : relays['r8'].state,
         'cputemp'  : getcputemp(),
-        'temp1'    : therm1.tempF,
-        'temp2'    : therm2.tempF,
-        'temp3'    : therm3.tempF,
-        'temp4'    : therm4.tempF,
-        'temp5'    : therm5.tempF,
-        'temp6'    : therm6.tempF,
-        'temp7'    : therm7.tempF,
-        'boardtemp'    : therm8.tempF,
-        'switch1'  : switchs['s1'].state
+        'temp1'    : therm1.tempF
         }
     return render_template('Station.html', **templateData)
 

@@ -10,7 +10,7 @@
 
 import RPi.GPIO as GPIO
 import time
-relays = (26,19,13,22,27,17,4)
+relays = (26,21,19,20,16,13,6,12)
 
 r1 = relays[0]
 r2 = relays[1]
@@ -19,6 +19,7 @@ r4 = relays[3]
 r5 = relays[4]
 r6 = relays[5]
 r7 = relays[6]
+r8 = relays[7]
 
 on = False
 off = True
@@ -65,6 +66,11 @@ def testsequence1(delay):
     time.sleep(delay)
     GPIO.output(r7, off)
     time.sleep(delay)
+    
+    GPIO.output(r8, on)
+    time.sleep(delay)
+    GPIO.output(r8, off)
+    time.sleep(delay)
 
 def testsequence2(delay):
     #first turn all on one at a time
@@ -82,6 +88,8 @@ def testsequence2(delay):
     time.sleep(delay)
     GPIO.output(r7, on)
     time.sleep(delay)
+    GPIO.output(r8, on)
+    time.sleep(delay)
     #then turn all off one at a time
     GPIO.output(r1, off)
     time.sleep(delay)
@@ -97,9 +105,16 @@ def testsequence2(delay):
     time.sleep(delay)
     GPIO.output(r7, off)
     time.sleep(delay)
-
+    GPIO.output(r8, off)
+    time.sleep(delay)
+    
 def testsequence3(delay):
     #turn each one on in turn, reverse order
+    GPIO.output(r8, on)
+    time.sleep(delay)
+    GPIO.output(r8, off)
+    time.sleep(delay)
+
     GPIO.output(r7, on)
     time.sleep(delay)
     GPIO.output(r7, off)
@@ -137,6 +152,8 @@ def testsequence3(delay):
 
 def testsequence4(delay):
     #first turn all on one at a time
+    GPIO.output(r8, on)
+    time.sleep(delay)
     GPIO.output(r7, on)
     time.sleep(delay)
     GPIO.output(r6, on)
@@ -152,6 +169,8 @@ def testsequence4(delay):
     GPIO.output(r1, on)
     time.sleep(delay)
     #then turn all off one at a time
+    GPIO.output(r8, off)
+    time.sleep(delay)
     GPIO.output(r7, off)
     time.sleep(delay)
     GPIO.output(r6, off)
