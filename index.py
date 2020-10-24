@@ -66,7 +66,7 @@ class thermometer:
         self.value = analog_read(self.pin)        # read ADC value A0 pin
         self.voltage = self.value * 3.3 / 1024       # calculate voltage
         self.resistance = 10 * self.voltage / (3.3 - self.voltage)    # calculate resistance value of thermistor
-        self.tempK = 1/(1/(273.15 + 25) + math.log(self.resistance/10)/3950.0) # calculate temperature (Kelvin)
+        self.tempK = (1/(1/(273.15 + 25) + math.log(self.resistance/10)/3950.0)) if self.resistance != 0 else 0 # calculate temperature (Kelvin)
         self.tempC = self.tempK -273.15        # calculate temperature (Celsius)
         self.tempF = Fdeg(self.tempC)     # calculate temperature (Fahrenheit)
         return self.tempF
